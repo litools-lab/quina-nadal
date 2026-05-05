@@ -1,0 +1,498 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@400;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body,html{font-family:'Lato',sans-serif;background:transparent;}
+
+.app{min-height:100vh;padding:1rem;position:relative;overflow:hidden;background:linear-gradient(160deg,#7F1D1D 0%,#991B1B 28%,#1A3A1A 68%,#14532D 100%);}
+.bg-deco{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+.star{position:absolute;background:#FCD34D;border-radius:50%;animation:twinkle var(--d,3s) ease-in-out infinite;opacity:0;}
+.snowflake{position:absolute;color:rgba(255,255,255,0.3);animation:fall var(--d,8s) linear infinite;top:-24px;}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(0.8);}50%{opacity:0.85;transform:scale(1.2);}}
+@keyframes fall{to{transform:translateY(115vh) rotate(360deg);opacity:0;}}
+
+.screen{display:none;position:relative;z-index:1;max-width:580px;margin:0 auto;}
+.screen.active{display:block;}
+
+/* HEADER */
+.app-header{text-align:center;margin-bottom:1rem;}
+.app-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,5vw,2.4rem);color:#FCD34D;text-shadow:2px 2px 8px rgba(0,0,0,0.5);letter-spacing:2px;}
+.deco{color:rgba(252,211,77,0.5);letter-spacing:4px;font-size:0.85rem;margin:3px 0;}
+.app-header .sub{font-size:0.7rem;color:rgba(252,211,77,0.55);letter-spacing:3px;text-transform:uppercase;margin-top:4px;}
+
+/* MENU */
+.menu-card{background:rgba(0,0,0,0.5);border:2px solid rgba(252,211,77,0.5);border-radius:16px;padding:1.5rem 1.25rem;text-align:center;}
+.menu-card h2{font-family:'Playfair Display',serif;color:#FCD34D;font-size:1.2rem;margin-bottom:0.4rem;}
+.menu-card p{color:rgba(252,211,77,0.65);font-size:0.82rem;margin-bottom:1.4rem;line-height:1.6;}
+.menu-btns{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+.menu-btn{background:rgba(0,0,0,0.35);border:2px solid rgba(252,211,77,0.45);border-radius:12px;padding:1.1rem 0.75rem;cursor:pointer;transition:all 0.2s;color:#FCD34D;text-align:center;}
+.menu-btn:hover{border-color:#FCD34D;background:rgba(0,0,0,0.55);transform:translateY(-2px);}
+.menu-btn .ico{font-size:2.2rem;display:block;margin-bottom:0.4rem;}
+.menu-btn .tit{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;display:block;}
+.menu-btn .desc{font-size:0.7rem;color:rgba(252,211,77,0.6);display:block;margin-top:3px;line-height:1.4;}
+.version{font-size:0.62rem;color:rgba(252,211,77,0.3);text-align:center;margin-top:1rem;letter-spacing:1px;}
+
+/* BOTONS GLOBALS */
+.btn-gold{background:linear-gradient(135deg,#B91C1C,#8B1212);border:2px solid #FCD34D;color:#FCD34D;font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:700;padding:0.55rem 1.1rem;border-radius:8px;cursor:pointer;transition:all 0.2s;}
+.btn-gold:hover{transform:translateY(-1px);}
+.btn-gold:active{transform:scale(0.97);}
+.btn-gold:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
+.btn-back{background:transparent;border:1px solid rgba(252,211,77,0.35);color:rgba(252,211,77,0.65);font-size:0.72rem;padding:0.3rem 0.8rem;border-radius:20px;cursor:pointer;font-family:'Lato',sans-serif;transition:all 0.2s;}
+.btn-back:hover{border-color:#FCD34D;color:#FCD34D;}
+.btn-sm{background:rgba(0,0,0,0.3);border:1px solid rgba(252,211,77,0.35);color:rgba(252,211,77,0.7);font-size:0.72rem;padding:0.3rem 0.7rem;border-radius:20px;cursor:pointer;font-family:'Lato',sans-serif;transition:all 0.2s;white-space:nowrap;}
+.btn-sm:hover{border-color:#FCD34D;color:#FCD34D;}
+
+.top-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
+.top-nav-title{font-family:'Playfair Display',serif;color:#FCD34D;font-size:0.95rem;}
+
+/* ===================== PRESENTADOR ===================== */
+.bombo-section{display:flex;flex-direction:column;align-items:center;gap:0.65rem;margin-bottom:0.75rem;}
+.numero-gran{background:radial-gradient(circle at 35% 35%,#FEF3C7,#D97706 70%,#92400E);border-radius:50%;width:clamp(110px,20vw,150px);height:clamp(110px,20vw,150px);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 28px rgba(217,119,6,0.55),inset 0 -4px 10px rgba(0,0,0,0.25);border:4px solid #FCD34D;}
+@keyframes apareixer{0%{transform:scale(0) rotate(-180deg);opacity:0;}70%{transform:scale(1.1) rotate(5deg);}100%{transform:scale(1) rotate(0);opacity:1;}}
+.num-show{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,8vw,4rem);font-weight:900;color:#7F1D1D;line-height:1;}
+.num-placeholder{font-family:'Playfair Display',serif;font-size:clamp(0.9rem,3vw,1.1rem);font-weight:700;color:rgba(127,29,29,0.6);text-align:center;padding:0 10px;line-height:1.3;}
+.frase-card{background:rgba(0,0,0,0.4);border:1px solid rgba(252,211,77,0.35);border-radius:10px;padding:0.55rem 1rem;max-width:320px;text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center;}
+.frase-text{font-family:'Playfair Display',serif;font-size:clamp(0.82rem,2.5vw,1rem);color:#FCD34D;font-style:italic;line-height:1.4;}
+.comptador{font-size:0.75rem;color:rgba(252,211,77,0.65);text-align:center;}
+
+.hist-bar{background:rgba(0,0,0,0.3);border:1px solid rgba(252,211,77,0.2);border-radius:9px;padding:0.45rem 0.75rem;margin-bottom:0.6rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.hist-label{font-size:0.65rem;color:rgba(252,211,77,0.55);letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
+.hist-pill{background:rgba(217,119,6,0.35);border:1px solid rgba(252,211,77,0.35);color:#FCD34D;font-size:0.7rem;font-weight:700;border-radius:4px;padding:1px 5px;}
+
+.grid-container{background:rgba(0,0,0,0.32);border:1px solid rgba(252,211,77,0.25);border-radius:12px;padding:0.65rem;}
+.grid-title{font-size:0.62rem;color:rgba(252,211,77,0.55);letter-spacing:2px;text-transform:uppercase;text-align:center;margin-bottom:0.4rem;}
+.grid-nums{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;}
+.cel-grid{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:clamp(0.48rem,1.3vw,0.7rem);font-weight:700;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.45);background:rgba(255,255,255,0.04);user-select:none;}
+.cel-grid.sortit{background:radial-gradient(circle at 35% 35%,#FEF3C7,#D97706);color:#7F1D1D;border-color:#FCD34D;box-shadow:0 0 6px rgba(217,119,6,0.45);}
+.cel-grid.ultim{box-shadow:0 0 12px rgba(252,211,77,0.85),0 0 4px rgba(217,119,6,1);transform:scale(1.1);border-color:#FCD34D;}
+@keyframes popnum{0%{transform:scale(0.5);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
+
+/* ===================== SETUP PARTICIPANT ===================== */
+.setup-panel{background:rgba(0,0,0,0.5);border:2px solid rgba(252,211,77,0.5);border-radius:14px;padding:1.5rem 1.25rem;}
+.setup-title{font-family:'Playfair Display',serif;color:#FCD34D;font-size:1.1rem;margin-bottom:0.5rem;text-align:center;}
+.setup-subtitle{font-size:0.8rem;color:rgba(252,211,77,0.6);text-align:center;margin-bottom:1.5rem;line-height:1.5;}
+.cartons-selector{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-bottom:1.5rem;}
+.carton-opt{background:rgba(0,0,0,0.35);border:2px solid rgba(252,211,77,0.35);border-radius:12px;padding:1rem 0.5rem;cursor:pointer;transition:all 0.2s;color:#FCD34D;text-align:center;}
+.carton-opt:hover{border-color:#FCD34D;background:rgba(0,0,0,0.55);transform:translateY(-2px);}
+.carton-opt.selected{border-color:#FCD34D;background:rgba(252,211,77,0.15);box-shadow:0 0 12px rgba(252,211,77,0.3);}
+.carton-opt .num{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;display:block;line-height:1;}
+.carton-opt .lbl{font-size:0.62rem;color:rgba(252,211,77,0.6);display:block;margin-top:4px;letter-spacing:0.5px;}
+
+/* ===================== CARTRONS ===================== */
+.sortits-bar{background:rgba(0,0,0,0.28);border:1px solid rgba(252,211,77,0.2);border-radius:9px;padding:0.4rem 0.7rem;margin-bottom:0.6rem;}
+.sortits-bar-title{font-size:0.62rem;color:rgba(252,211,77,0.55);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+.sortits-pills{display:flex;flex-wrap:wrap;gap:3px;}
+.s-pill{background:rgba(217,119,6,0.3);border:1px solid rgba(252,211,77,0.3);color:#FCD34D;font-size:0.66rem;font-weight:700;border-radius:4px;padding:1px 4px;}
+
+.cartrons-grid{display:flex;flex-direction:column;gap:1rem;}
+.carton{background:rgba(254,249,236,0.97);border:3px solid #D97706;border-radius:12px;padding:0.65rem 0.65rem 0.55rem;box-shadow:0 4px 14px rgba(0,0,0,0.35);}
+.carton.guanyador{border-color:#FCD34D;box-shadow:0 0 22px rgba(252,211,77,0.55);}
+.carton-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;}
+.carton-nom{font-family:'Playfair Display',serif;font-size:0.95rem;color:#7F1D1D;font-weight:900;}
+.carton-sub{font-size:0.64rem;color:#B45309;}
+.badge-quina{background:#D97706;color:#FFF;font-size:0.62rem;padding:2px 7px;border-radius:10px;font-weight:700;}
+.badge-linia{background:#166534;color:#D1FAE5;font-size:0.62rem;padding:2px 7px;border-radius:10px;font-weight:700;}
+.carton-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;}
+.cela{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:clamp(0.55rem,1.6vw,0.8rem);font-weight:700;border:1.5px solid #D6B87A;cursor:pointer;transition:all 0.15s;user-select:none;background:#FEF9EC;color:#92400E;position:relative;overflow:hidden;}
+.cela:hover{border-color:#D97706;background:#FDE68A;}
+.cela.marcada{background:radial-gradient(circle at 35% 35%,#FEF3C7,#D97706);color:#7F1D1D;border-color:#B45309;box-shadow:inset 0 1px 3px rgba(0,0,0,0.15);}
+.cela.marcada::after{content:'';position:absolute;width:55%;height:55%;background:rgba(127,29,29,0.2);border-radius:50%;}
+.cela.buida{background:transparent;border-color:transparent;cursor:default;pointer-events:none;}
+@keyframes popc{0%{transform:scale(0.6);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
+.cela.pop{animation:popc 0.22s ease-out;}
+
+.alert-banner{border-radius:10px;padding:0.55rem 1rem;margin-bottom:0.6rem;text-align:center;border:2px solid #FCD34D;}
+.alert-banner p{font-family:'Playfair Display',serif;color:#FFF;font-size:clamp(0.85rem,2.5vw,1rem);font-weight:700;}
+.alert-quina{background:#D97706;}
+.alert-linia{background:#166534;}
+.alert-error{background:#7F1D1D;border-color:rgba(252,211,77,0.4);}
+
+.confetti-p{position:fixed;width:8px;height:8px;pointer-events:none;z-index:200;animation:cffall 1.4s ease-out forwards;border-radius:2px;}
+@keyframes cffall{0%{opacity:1;transform:translateY(0) rotate(0);}100%{opacity:0;transform:translateY(230px) rotate(720deg);}}
+</style>
+
+<!-- Les frases del presentador es carreguen des d'un fitxer a part -->
+<script src="frases.js"></script>
+
+<div class="app" id="app">
+  <div class="bg-deco" id="bgdeco"></div>
+
+  <h2 class="sr-only">La Quina de Nadal — Aplicació completa</h2>
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="deco">✦ ❄ ✦ ❄ ✦</div>
+    <h1>🎄 La Quina de Nadal</h1>
+    <div class="deco">✦ ❄ ✦ ❄ ✦</div>
+  </div>
+
+  <!-- MENÚ PRINCIPAL -->
+  <div class="screen active" id="screen-menu">
+    <div class="menu-card">
+      <h2>Benvinguts a la Quina!</h2>
+      <p>El joc tradicional de Nadal. Qui ets tu avui?</p>
+      <div class="menu-btns">
+        <div class="menu-btn" onclick="goTo('screen-presentador');initPresentador();">
+          <span class="ico">🎱</span>
+          <span class="tit">Presentador</span>
+          <span class="desc">Canta els números del bombo</span>
+        </div>
+        <div class="menu-btn" onclick="goTo('screen-setup-jugador')">
+          <span class="ico">🎴</span>
+          <span class="tit">Participant</span>
+          <span class="desc">Juga amb el teu cartró</span>
+        </div>
+      </div>
+    </div>
+    <div class="version">v1.1 · La Quina de Nadal</div>
+  </div>
+
+  <!-- PRESENTADOR -->
+  <div class="screen" id="screen-presentador">
+    <div class="top-nav">
+      <button class="btn-back" onclick="confirmarSortida('screen-menu')">← Menú</button>
+      <span class="top-nav-title">🎱 El Presentador</span>
+      <button class="btn-sm" onclick="reiniciarBombo()">↺ Reinicia</button>
+    </div>
+
+    <div class="bombo-section">
+      <div class="numero-gran" id="display-num">
+        <span class="num-placeholder" id="pres-placeholder">Prem per<br>treure!</span>
+        <span class="num-show" id="pres-num" style="display:none"></span>
+      </div>
+      <div class="frase-card">
+        <div class="frase-text" id="pres-frase">Bona sort a tothom! 🌟</div>
+      </div>
+      <button class="btn-gold" id="btn-treure" onclick="treurNum()">🎱 Treure Número!</button>
+      <div class="comptador" id="pres-comptador">0 de 90 números trets</div>
+    </div>
+
+    <div class="hist-bar">
+      <span class="hist-label">Últims:</span>
+      <span id="hist-content" style="color:rgba(252,211,77,0.4);font-size:0.75rem;">—</span>
+    </div>
+
+    <div class="grid-container">
+      <div class="grid-title">Números del 1 al 90</div>
+      <div class="grid-nums" id="pres-grid"></div>
+    </div>
+  </div>
+
+  <!-- SETUP PARTICIPANT -->
+  <div class="screen" id="screen-setup-jugador">
+    <div class="top-nav">
+      <button class="btn-back" onclick="goTo('screen-menu')">← Menú</button>
+      <span class="top-nav-title">🎴 Els meus cartrons</span>
+      <div></div>
+    </div>
+    <div class="setup-panel">
+      <div class="setup-title">Quants cartrons vols jugar?</div>
+      <div class="setup-subtitle">Cada cartró és una oportunitat de guanyar!<br>Tria entre 1 i 4 cartrons.</div>
+      <div class="cartons-selector">
+        <div class="carton-opt selected" id="opt-1" onclick="seleccionarCartrons(1)">
+          <span class="num">1</span>
+          <span class="lbl">cartró</span>
+        </div>
+        <div class="carton-opt" id="opt-2" onclick="seleccionarCartrons(2)">
+          <span class="num">2</span>
+          <span class="lbl">cartrons</span>
+        </div>
+        <div class="carton-opt" id="opt-3" onclick="seleccionarCartrons(3)">
+          <span class="num">3</span>
+          <span class="lbl">cartrons</span>
+        </div>
+        <div class="carton-opt" id="opt-4" onclick="seleccionarCartrons(4)">
+          <span class="num">4</span>
+          <span class="lbl">cartrons</span>
+        </div>
+      </div>
+      <button class="btn-gold" onclick="iniciarPartida()" style="width:100%;">🎄 Iniciar partida!</button>
+    </div>
+  </div>
+
+  <!-- JOC JUGADOR -->
+  <div class="screen" id="screen-joc-jugador">
+    <div class="top-nav">
+      <button class="btn-back" onclick="confirmarSortida('screen-menu')">← Menú</button>
+      <span class="top-nav-title">🎴 Els meus cartrons</span>
+      <button class="btn-sm" onclick="confirmarSortida('screen-setup-jugador')">↺ Nova</button>
+    </div>
+    <div id="alert-zone"></div>
+    <div class="sortits-bar">
+      <div class="sortits-bar-title" id="sortits-title">Números marcats (0)</div>
+      <div class="sortits-pills" id="sortits-pills"><span style="color:rgba(252,211,77,0.4);font-size:0.75rem;">Clica els números del teu cartró quan el presentador els canti</span></div>
+    </div>
+    <div class="cartrons-grid" id="cartrons-grid"></div>
+  </div>
+
+</div>
+
+<script>
+function rnd(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+// NAV
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function confirmarSortida(dest){
+  if(confirm('Vols sortir? Es perdrà la partida actual.')) goTo(dest);
+}
+
+// ==================== PRESENTADOR ====================
+let presDisp=[], presSortits=[], presUltim=null;
+
+function initPresentador(){
+  presDisp=Array.from({length:90},(_,i)=>i+1);
+  presSortits=[];
+  presUltim=null;
+  const grid=document.getElementById('pres-grid');
+  grid.innerHTML='';
+  for(let i=1;i<=90;i++){
+    const c=document.createElement('div');
+    c.className='cel-grid';c.id='pcg-'+i;c.textContent=i;
+    c.onclick=()=>togglePresManual(i);
+    grid.appendChild(c);
+  }
+  document.getElementById('pres-num').style.display='none';
+  document.getElementById('pres-placeholder').style.display='block';
+  document.getElementById('pres-frase').textContent='Bona sort a tothom! 🌟';
+  document.getElementById('btn-treure').disabled=false;
+  document.getElementById('pres-comptador').textContent='0 de 90 números trets';
+  document.getElementById('hist-content').innerHTML='<span style="color:rgba(252,211,77,0.4);font-size:0.75rem;">—</span>';
+}
+
+function treurNum(){
+  if(!presDisp.length)return;
+  const i=Math.floor(Math.random()*presDisp.length);
+  const num=presDisp.splice(i,1)[0];
+  presSortits.push(num);
+  if(presUltim!==null){const p=document.getElementById('pcg-'+presUltim);if(p)p.classList.remove('ultim');}
+  presUltim=num;
+  const c=document.getElementById('pcg-'+num);
+  c.classList.add('sortit','ultim');
+  c.style.animation='none';c.offsetHeight;c.style.animation='popnum 0.3s ease-out';
+  const dn=document.getElementById('display-num');
+  dn.style.animation='none';dn.offsetHeight;dn.style.animation='apareixer 0.5s ease-out';
+  document.getElementById('pres-placeholder').style.display='none';
+  const ne=document.getElementById('pres-num');ne.style.display='block';ne.textContent=num;
+  document.getElementById('pres-frase').textContent=rnd(FRASES[num]);
+  if(!presDisp.length){document.getElementById('btn-treure').disabled=true;llançarConfetti();}
+  document.getElementById('pres-comptador').textContent=`${presSortits.length} de 90 números trets`;
+  const darrers=presSortits.slice(-6).reverse();
+  document.getElementById('hist-content').innerHTML=darrers.map(n=>`<span class="hist-pill">${n}</span>`).join('');
+  c.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function togglePresManual(n){
+  const idx=presSortits.indexOf(n);
+  if(idx===-1){presSortits.push(n);const di=presDisp.indexOf(n);if(di!==-1)presDisp.splice(di,1);document.getElementById('pcg-'+n).classList.add('sortit');}
+  else{presSortits.splice(idx,1);presDisp.push(n);presDisp.sort((a,b)=>a-b);const c=document.getElementById('pcg-'+n);c.classList.remove('sortit','ultim');if(presUltim===n)presUltim=null;}
+  document.getElementById('pres-comptador').textContent=`${presSortits.length} de 90 números trets`;
+}
+
+function reiniciarBombo(){if(presSortits.length>0&&!confirm('Reiniciar el bombo?'))return;initPresentador();}
+
+// ==================== PARTICIPANT ====================
+let numCartrons=1, cartrons=[], alertaTimer=null;
+
+function seleccionarCartrons(n){
+  numCartrons=n;
+  for(let i=1;i<=4;i++){
+    const el=document.getElementById('opt-'+i);
+    if(el) el.classList.toggle('selected', i===n);
+  }
+}
+
+/**
+ * Genera un cartró vàlid de quina amb garantia d'unicitat global:
+ * - 3 files × 9 columnes (dècades: col0=1-9, col1=10-19, ..., col8=80-90)
+ * - Exactament 5 números per fila → 15 en total
+ * - Cap número repetit en tot el cartró
+ *
+ * Algoritme:
+ * 1. Decidim quantes files de cada dècada (columna) tindran número,
+ *    generant una distribució aleatòria que sumi exactament 15.
+ * 2. Per cada dècada, triem números únics del seu rang i els assignem
+ *    a files aleatòries dins d'aquella dècada.
+ */
+function generarCarton(){
+  const RANGS = [
+    [1,9],[10,19],[20,29],[30,39],[40,49],
+    [50,59],[60,69],[70,79],[80,90]
+  ];
+
+  // Pas 1: distribució aleatòria de quantes files té cada dècada (suma = 15)
+  let distribucio = null;
+  while(!distribucio){
+    const d = new Array(9).fill(0);
+    let restants = 15;
+    const ordre = shuffle([0,1,2,3,4,5,6,7,8]);
+    let valid = true;
+    for(let i = 0; i < 9; i++){
+      const col = ordre[i];
+      const columnesRestants = 8 - i;
+      const minNec = Math.max(0, restants - columnesRestants * 3);
+      const maxPos = Math.min(3, restants);
+      if(minNec > maxPos){ valid = false; break; }
+      d[col] = minNec + Math.floor(Math.random() * (maxPos - minNec + 1));
+      restants -= d[col];
+    }
+    if(valid && restants === 0) distribucio = d;
+  }
+
+  // Pas 2: construir la graella
+  const graella = [
+    new Array(9).fill(null),
+    new Array(9).fill(null),
+    new Array(9).fill(null)
+  ];
+
+  for(let col = 0; col < 9; col++){
+    const count = distribucio[col];
+    if(count === 0) continue;
+    const [min, max] = RANGS[col];
+    // Números únics aleatoris dins del rang d'aquesta dècada
+    const numsTriats = shuffle(Array.from({length: max - min + 1}, (_, i) => min + i)).slice(0, count);
+    // Files aleatòries on col·locar-los
+    const filesTriades = shuffle([0, 1, 2]).slice(0, count);
+    filesTriades.forEach((fila, i) => { graella[fila][col] = numsTriats[i]; });
+  }
+
+  return graella;
+}
+
+function teLinia(grid,marcats){
+  for(const fila of grid){
+    const ns=fila.filter(n=>n!==null);
+    if(ns.length && ns.every(n=>marcats.has(n))) return true;
+  }
+  return false;
+}
+function teQuina(grid,marcats){
+  return grid.flat().filter(n=>n!==null).every(n=>marcats.has(n));
+}
+
+function iniciarPartida(){
+  cartrons=[];
+  for(let c=0;c<numCartrons;c++){
+    cartrons.push({idx:c+1,total:numCartrons,grid:generarCarton(),marcats:new Set(),linia:false,quina:false});
+  }
+  renderJocJugador();
+  goTo('screen-joc-jugador');
+}
+
+function renderJocJugador(){
+  document.getElementById('sortits-title').textContent='Números marcats (0)';
+  document.getElementById('sortits-pills').innerHTML='<span style="color:rgba(252,211,77,0.4);font-size:0.75rem;">Clica els teus números quan el presentador els canti</span>';
+  document.getElementById('alert-zone').innerHTML='';
+  renderCartrons();
+}
+
+function renderCartrons(){
+  const cg=document.getElementById('cartrons-grid');if(!cg)return;
+  cg.innerHTML='';
+  for(let ci=0;ci<cartrons.length;ci++){
+    const c=cartrons[ci];
+    const div=document.createElement('div');
+    div.className='carton'+(c.quina?' guanyador':'');
+    div.id='carton-'+ci;
+    const titol=c.total>1?'Cartró '+c.idx+' de '+c.total:'El meu cartró';
+    div.innerHTML=`<div class="carton-header"><div><div class="carton-nom">${titol}</div></div><div id="badges-${ci}">${badgesHTML(c)}</div></div><div class="carton-grid" id="cg-${ci}"></div>`;
+    cg.appendChild(div);
+    renderGrid(ci);
+  }
+}
+
+function badgesHTML(c){
+  return (c.quina?'<span class="badge-quina">QUINA!</span> ':'')+
+         (c.linia&&!c.quina?'<span class="badge-linia">LÍNIA</span>':'');
+}
+
+function renderGrid(ci){
+  const c=cartrons[ci];
+  const el=document.getElementById('cg-'+ci);if(!el)return;
+  el.innerHTML='';
+  for(let f=0;f<3;f++){
+    for(let col=0;col<9;col++){
+      const num=c.grid[f][col];
+      const cel=document.createElement('div');
+      if(num===null){cel.className='cela buida';}
+      else{
+        cel.className='cela'+(c.marcats.has(num)?' marcada':'');
+        cel.textContent=num;
+        cel.onclick=()=>clickCela(ci,num,cel);
+      }
+      el.appendChild(cel);
+    }
+  }
+}
+
+function clickCela(ci,num,cel){
+  const c=cartrons[ci];
+  if(c.marcats.has(num)){
+    c.marcats.delete(num);
+    cel.className='cela';
+  } else {
+    c.marcats.add(num);
+    cel.className='cela marcada pop';
+    cel.addEventListener('animationend',()=>cel.classList.remove('pop'),{once:true});
+    comprovarGuanyador(ci);
+  }
+  actualitzarSortits();
+}
+
+function comprovarGuanyador(ci){
+  const c=cartrons[ci];
+  const sufx=c.total>1?' (cartró '+c.idx+')':'';
+  if(!c.quina&&teQuina(c.grid,c.marcats)){
+    c.quina=true;c.linia=true;
+    document.getElementById('carton-'+ci).classList.add('guanyador');
+    document.getElementById('badges-'+ci).innerHTML=badgesHTML(c);
+    mostrarAlerta('🎉 QUINA!'+sufx+' Tens la QUINA! Crida ja!','quina');
+    llançarConfetti();
+  } else if(!c.linia&&teLinia(c.grid,c.marcats)){
+    c.linia=true;
+    document.getElementById('badges-'+ci).innerHTML=badgesHTML(c);
+    mostrarAlerta('🎊 LÍNIA!'+sufx+' Tens LÍNIA!','linia');
+  }
+}
+
+function actualitzarSortits(){
+  const tots=new Set();
+  for(const c of cartrons)for(const n of c.marcats)tots.add(n);
+  const arr=[...tots].sort((a,b)=>a-b);
+  const pills=document.getElementById('sortits-pills');
+  const title=document.getElementById('sortits-title');
+  if(pills)pills.innerHTML=arr.length===0
+    ?'<span style="color:rgba(252,211,77,0.4);font-size:0.75rem;">Clica els teus números quan el presentador els canti</span>'
+    :arr.map(n=>`<span class="s-pill">${n}</span>`).join('');
+  if(title)title.textContent=`Números marcats (${arr.length})`;
+}
+
+function mostrarAlerta(msg,tipus){
+  const az=document.getElementById('alert-zone');if(!az)return;
+  if(alertaTimer)clearTimeout(alertaTimer);
+  az.innerHTML=`<div class="alert-banner alert-${tipus}"><p>${msg}</p></div>`;
+  alertaTimer=setTimeout(()=>{if(az)az.innerHTML='';},tipus==='error'?2500:6000);
+}
+
+function llançarConfetti(){
+  const colors=['#B91C1C','#FCD34D','#166534','#FFFFFF','#D97706'];
+  for(let i=0;i<50;i++){
+    setTimeout(()=>{
+      const c=document.createElement('div');c.className='confetti-p';
+      c.style.left=Math.random()*100+'vw';c.style.top='30%';
+      c.style.background=colors[Math.floor(Math.random()*colors.length)];
+      document.body.appendChild(c);setTimeout(()=>c.remove(),1500);
+    },i*30);
+  }
+}
+
+// DECORACIÓ
+const bg=document.getElementById('bgdeco');
+for(let i=0;i<30;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*3+1.5;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(Math.random()*3+2).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s`;bg.appendChild(s);}
+['❄','❅','❆'].forEach(ch=>{for(let j=0;j<4;j++){const sf=document.createElement('div');sf.className='snowflake';sf.textContent=ch;sf.style.cssText=`left:${Math.random()*100}%;--d:${(Math.random()*8+6).toFixed(1)}s;animation-delay:${(Math.random()*8).toFixed(1)}s;font-size:${Math.floor(Math.random()*10+10)}px`;bg.appendChild(sf);}});
+</script>
