@@ -2,8 +2,6 @@
 
 Aplicació web per jugar a la Quina de Nadal, desenvolupada amb HTML/CSS/JS pur.
 
-**Conversa original:** https://claude.ai/share/4aafd7e7-4b10-4fa9-8f06-045d9fcfb529
-
 ---
 
 ## 📱 Funcionalitats (v1.0)
