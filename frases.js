@@ -1,4 +1,48 @@
-// frases.js — Frases del presentador per a cada número de la Quina de Nadal
+/**
+ * frases.js — Frases del presentador per a cada número de la Quina de Nadal
+ * ============================================================================
+ *
+ * COM FUNCIONA
+ * ------------
+ * Cada número de l'1 al 90 té associat un array d'una o més frases.
+ * El presentador en tria una a l'atzar cada vegada que surt el número.
+ *
+ * FORMAT
+ * ------
+ * La estructura és un objecte JavaScript on cada clau és un número (sense cometes)
+ * i cada valor és un array de strings amb les frases alternatives:
+ *
+ *   NÚM: ["Frase opció A", "Frase opció B", "Frase opció C"],
+ *
+ * Regles:
+ *   - Cada número ha de tenir com a mínim 1 frase.
+ *   - Es recomana entre 2 i 4 alternatives per número per afegir varietat.
+ *   - Les frases han d'acabar amb signe d'exclamació (!).
+ *   - Llenguatge: català, to festiu i familiar.
+ *
+ * COM AFEGIR O MODIFICAR FRASES
+ * ------------------------------
+ * 1. Localitza el número que vols modificar (estan ordenats de l'1 al 90).
+ * 2. Edita o afegeix strings a l'array corresponent.
+ * 3. Separa les opcions amb comes i tanca l'array amb ].
+ * 4. Comprova que el fitxer no té errors sintàctics (cap coma de menys o de més).
+ *
+ * EXEMPLE — afegir una frase nova al número 7:
+ *
+ *   ABANS:   7: ["El set, la sort!", "Set, porta bona sort!"],
+ *   DESPRÉS: 7: ["El set, la sort!", "Set, porta bona sort!", "Set, número màgic!"],
+ *
+ * COM PROPOSAR CANVIS
+ * -------------------
+ * Sense tocar el codi directament:
+ *   → Obre un Issue usant la plantilla "Proposta de frases" a GitHub.
+ *
+ * Contribuint directament:
+ *   → Fes un fork, edita aquest fitxer i obre un Pull Request.
+ *   → Consulta CONTRIBUTING.md per als detalls.
+ *
+ * ============================================================================
+ */
 const FRASES = {
   1:  ["El número u!", "Un! El debut!", "El primer de tots!"],
   2:  ["El dos, parella!", "El dos!", "Dos, dos!"],
