@@ -11,7 +11,7 @@
 
 **El joc tradicional de Nadal, ara al teu mòbil o ordinador.**
 
-[🎮 Jugar ara](https://TBD.github.io/quina-nadal/) · [🐛 Reportar un error](../../issues) · [💡 Suggerir una millora](../../issues)
+[🎮 Jugar ara](https://litools-lab.github.io/quina-nadal/) · [🐛 Reportar un error](../../issues) · [💡 Suggerir una millora](../../issues)
 
 </div>
 
@@ -43,7 +43,7 @@
 
 Pots jugar directament sense instal·lar res:
 
-**👉 [https://TBD.github.io/quina-nadal/](https://TBD.github.io/quina-nadal/)**
+**👉 [https://TBD.github.io/quina-nadal/](https://litools-lab.github.io/quina-nadal/)**
 
 Compatible amb tots els navegadors moderns (Chrome, Firefox, Safari, Edge) i dispositius (mòbil, tauleta, escriptori).
 
