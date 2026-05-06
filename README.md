@@ -1,4 +1,4 @@
-# 🎄 La Quina de Nadal
+# <img src="assets/favicon.png" width="48" height="48" align="absmiddle" alt=""> La Quina de Nadal
 
 <div align="center">
 
