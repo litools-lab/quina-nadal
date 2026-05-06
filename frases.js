@@ -1,7 +1,4 @@
 // frases.js — Frases del presentador per a cada número de la Quina de Nadal
-// Pots afegir, treure o modificar frases sense tocar el codi principal (index.html).
-// Cada número (de l'1 al 90) té un array de frases; cada vegada se'n tria una a l'atzar.
-
 const FRASES = {
   1:  ["El número u!", "Un! El debut!", "El primer de tots!"],
   2:  ["El dos, parella!", "El dos!", "Dos, dos!"],
