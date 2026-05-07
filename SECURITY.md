@@ -6,7 +6,7 @@ Durant la fase beta, només es dona suport a la darrera versió publicada.
 
 | Versió | Suportada |
 |--------|-----------|
-| 1.0.x-beta | ✅ |
+| 1.0.x | ✅ |
 
 ## Reportar una vulnerabilitat
 
