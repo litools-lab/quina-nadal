@@ -704,9 +704,14 @@
   let qrStream = null, qrAnimFrame = null;
 
   function detectarSuportCamera(){
-    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
-      document.getElementById('btn-qr').style.display = 'flex';
-    }
+    // Comprovem que existeix l'API de càmera i que hi ha algun dispositiu de vídeo
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+      const teCamera = devices.some(d => d.kind === 'videoinput');
+      if(teCamera){
+        document.getElementById('btn-qr').style.display = 'flex';
+      }
+    }).catch(() => {});
   }
 
   async function obrirQR(){
