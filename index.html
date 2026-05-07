@@ -1,17 +1,8 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NVMZLD8WBP"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-NVMZLD8WBP');
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="assets/favicon.png">
   <title>La Quina de Nadal</title>
 
   <!-- BUG #1 i #12 FIX: frases.js ara es carrega al <head>, abans de qualsevol ús -->
@@ -123,7 +114,10 @@
     .cela:hover{border-color:#D97706;background:#FDE68A;}
     .cela.marcada{background:radial-gradient(circle at 35% 35%,#FEF3C7,#D97706);color:#7F1D1D;border-color:#B45309;box-shadow:inset 0 1px 3px rgba(0,0,0,0.15);}
     .cela.marcada::after{content:'';position:absolute;width:55%;height:55%;background:rgba(127,29,29,0.2);border-radius:50%;}
-    .cela.buida{background:transparent;border-color:transparent;cursor:default;pointer-events:none;}
+    .cela.buida{cursor:default;pointer-events:none;border-color:rgba(180,140,90,0.3);overflow:hidden;background:#F5EDDA;}
+    .cela.buida::before{content:'';position:absolute;inset:0;background:
+      repeating-linear-gradient(45deg,rgba(180,140,90,0.13) 0px,rgba(180,140,90,0.13) 1.5px,transparent 1.5px,transparent 7px),
+      repeating-linear-gradient(-45deg,rgba(180,140,90,0.13) 0px,rgba(180,140,90,0.13) 1.5px,transparent 1.5px,transparent 7px);}
     /* BUG #7 FIX: estil per celes bloquejades quan hi ha QUINA */
     .carton.guanyador .cela:not(.buida){cursor:default;pointer-events:none;}
     @keyframes popc{0%{transform:scale(0.6);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
@@ -137,6 +131,96 @@
 
     .confetti-p{position:fixed;width:8px;height:8px;pointer-events:none;z-index:200;animation:cffall 1.4s ease-out forwards;border-radius:2px;}
     @keyframes cffall{0%{opacity:1;transform:translateY(0) rotate(0);}100%{opacity:0;transform:translateY(230px) rotate(720deg);}}
+
+    /* ===================== MODE SELECTOR (aleatori / codi) ===================== */
+    .mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:0;background:rgba(0,0,0,0.25);border-radius:10px;padding:3px;margin-bottom:1.25rem;}
+    .mode-tab{border:none;background:transparent;color:rgba(252,211,77,0.55);font-family:'Lato',sans-serif;font-size:0.78rem;font-weight:700;padding:0.5rem 0.5rem;border-radius:8px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+    .mode-tab.active{background:rgba(252,211,77,0.15);color:#FCD34D;border:1px solid rgba(252,211,77,0.4);}
+
+    .mode-panel{display:none;}
+    .mode-panel.active{display:block;}
+
+    /* Codi input */
+    .codi-wrap{margin-bottom:1rem;}
+    .codi-label{font-size:0.72rem;color:rgba(252,211,77,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.4rem;display:block;}
+    .codi-row{display:flex;gap:0.5rem;align-items:center;}
+    .codi-input{flex:1;background:rgba(0,0,0,0.35);border:2px solid rgba(252,211,77,0.35);border-radius:8px;color:#FCD34D;font-family:'Lato',sans-serif;font-size:1rem;font-weight:700;padding:0.55rem 0.75rem;letter-spacing:2px;text-transform:uppercase;outline:none;transition:border-color 0.2s;}
+    .codi-input::placeholder{color:rgba(252,211,77,0.25);font-weight:400;letter-spacing:1px;text-transform:none;}
+    .codi-input:focus{border-color:#FCD34D;}
+    .codi-input.error{border-color:#B91C1C;animation:shake 0.3s ease-out;}
+    @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+    .btn-qr{background:rgba(0,0,0,0.35);border:2px solid rgba(252,211,77,0.35);border-radius:8px;color:#FCD34D;font-size:1.2rem;padding:0.45rem 0.65rem;cursor:pointer;transition:all 0.2s;line-height:1;flex-shrink:0;}
+    .btn-qr:hover{border-color:#FCD34D;}
+    .codi-hint{font-size:0.68rem;color:rgba(252,211,77,0.4);margin-top:0.35rem;line-height:1.5;}
+
+    /* QR scanner overlay */
+    .qr-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:400;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:1.5rem;}
+    .qr-video-wrap{position:relative;width:min(320px,90vw);aspect-ratio:1;}
+    .qr-video-wrap video{width:100%;height:100%;object-fit:cover;border-radius:12px;}
+    .qr-corner{position:absolute;width:28px;height:28px;border-color:#FCD34D;border-style:solid;}
+    .qr-corner.tl{top:6px;left:6px;border-width:3px 0 0 3px;border-radius:4px 0 0 4px;}
+    .qr-corner.tr{top:6px;right:6px;border-width:3px 3px 0 0;border-radius:0 4px 0 0;}
+    .qr-corner.bl{bottom:6px;left:6px;border-width:0 0 3px 3px;border-radius:0 0 0 4px;}
+    .qr-corner.br{bottom:6px;right:6px;border-width:0 3px 3px 0;border-radius:0 0 4px 0;}
+    .qr-line{position:absolute;left:10%;width:80%;height:2px;background:rgba(252,211,77,0.7);animation:qrscan 2s ease-in-out infinite;}
+    @keyframes qrscan{0%,100%{top:10%;}50%{top:88%;}}
+    .qr-msg{color:#FCD34D;font-family:'Playfair Display',serif;font-size:1rem;text-align:center;}
+    .qr-error{color:#F87171;font-size:0.8rem;text-align:center;min-height:1.2em;}
+
+    /* ===================== FOOTER ===================== */
+    .app-footer{position:relative;z-index:1;max-width:580px;margin:1.5rem auto 0;padding:1rem 0 0.5rem;border-top:1px solid rgba(252,211,77,0.15);display:flex;flex-direction:column;align-items:center;gap:0.4rem;}
+    .footer-brand{display:flex;align-items:center;gap:0.45rem;text-decoration:none;opacity:0.7;transition:opacity 0.2s;}
+    .footer-brand:hover{opacity:1;}
+    .footer-logo{width:22px;height:22px;object-fit:contain;}
+    .footer-name{font-family:'Playfair Display',serif;font-size:0.85rem;color:#FCD34D;letter-spacing:1px;}
+    .footer-links{display:flex;gap:1rem;font-size:0.65rem;}
+    .footer-links a{color:rgba(252,211,77,0.4);text-decoration:none;letter-spacing:0.5px;transition:color 0.2s;}
+    .footer-links a:hover{color:rgba(252,211,77,0.8);}
+
+    /* ── SETUP: mode selector tabs ── */
+    .mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid rgba(252,211,77,0.4);border-radius:10px;overflow:hidden;margin-bottom:1.2rem;}
+    .mode-tab{background:transparent;border:none;color:rgba(252,211,77,0.55);font-family:'Playfair Display',serif;font-size:0.82rem;font-weight:700;padding:0.6rem 0.5rem;cursor:pointer;transition:all 0.2s;text-align:center;}
+    .mode-tab.active{background:rgba(252,211,77,0.15);color:#FCD34D;}
+    .mode-tab:first-child{border-right:2px solid rgba(252,211,77,0.4);}
+    .mode-section{display:none;}
+    .mode-section.active{display:block;}
+
+    /* ── CODI input ── */
+    .codi-wrap{margin-bottom:1rem;}
+    .codi-label{font-size:0.72rem;color:rgba(252,211,77,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.4rem;display:block;}
+    .codi-row{display:flex;gap:0.5rem;align-items:stretch;}
+    .codi-input{flex:1;background:rgba(0,0,0,0.4);border:2px solid rgba(252,211,77,0.4);border-radius:8px;color:#FCD34D;font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;padding:0.55rem 0.8rem;outline:none;text-transform:uppercase;letter-spacing:2px;}
+    .codi-input::placeholder{color:rgba(252,211,77,0.25);letter-spacing:1px;font-size:0.85rem;font-weight:400;}
+    .codi-input:focus{border-color:#FCD34D;}
+    .btn-qr{background:rgba(0,0,0,0.35);border:2px solid rgba(252,211,77,0.4);border-radius:8px;color:#FCD34D;font-size:1.2rem;padding:0 0.75rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;}
+    .btn-qr:hover{border-color:#FCD34D;}
+    .codi-hint{font-size:0.68rem;color:rgba(252,211,77,0.4);margin-top:0.35rem;line-height:1.5;}
+    .codi-error{font-size:0.72rem;color:#FCA5A5;margin-top:0.35rem;display:none;}
+
+    /* ── QR scanner overlay ── */
+    .qr-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:400;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:1.5rem;}
+    .qr-overlay video{width:100%;max-width:340px;border-radius:12px;border:2px solid rgba(252,211,77,0.5);}
+    .qr-frame{position:relative;width:100%;max-width:340px;}
+    .qr-corners{position:absolute;inset:0;pointer-events:none;}
+    .qr-corners::before,.qr-corners::after{content:'';position:absolute;width:28px;height:28px;border-color:#FCD34D;border-style:solid;}
+    .qr-corners::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:4px 0 0 0;}
+    .qr-corners::after{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 4px 0;}
+    .qr-title{font-family:'Playfair Display',serif;color:#FCD34D;font-size:1rem;text-align:center;}
+    .qr-subtitle{font-size:0.75rem;color:rgba(252,211,77,0.6);text-align:center;}
+
+    /* ── Badge codi al cartró ── */
+    .badge-codi{background:rgba(0,0,0,0.12);color:#7F1D1D;font-size:0.58rem;padding:2px 6px;border-radius:10px;font-family:'Lato',sans-serif;letter-spacing:1px;font-weight:700;text-transform:uppercase;}
+
+    /* ── FOOTER LiTools ── */
+    .litools-footer{text-align:center;padding:1.5rem 1rem 1rem;margin-top:0.5rem;border-top:1px solid rgba(252,211,77,0.12);}
+    .litools-footer a{display:inline-flex;align-items:center;gap:0;text-decoration:none;font-size:0.85rem;font-weight:700;letter-spacing:1px;transition:opacity 0.2s;opacity:0.6;}
+    .litools-footer a:hover{opacity:1;}
+    .litools-footer img{height:26px;width:auto;}
+    .litools-footer .li{color:#ffffff;}
+    .litools-footer .tools{color:#05bfee;}
+    .litools-footer .footer-links{margin-top:0.5rem;display:flex;justify-content:center;gap:1rem;}
+    .litools-footer .footer-links a{font-size:0.62rem;font-weight:400;letter-spacing:0.5px;}
+
   </style>
 </head>
 <body>
@@ -168,7 +252,6 @@
     </div>
   </div>
 
-  <h2 class="sr-only">La Quina de Nadal — Aplicació completa</h2>
 
   <!-- HEADER -->
   <div class="app-header">
@@ -195,14 +278,14 @@
         </div>
       </div>
     </div>
-    <div class="version">v1.2 · La Quina de Nadal</div>
+    <div class="version">v1.3.0-beta · La Quina de Nadal</div>
   </div>
 
   <!-- PRESENTADOR -->
   <div class="screen" id="screen-presentador">
     <div class="top-nav">
       <button class="btn-back" onclick="confirmarSortida('screen-menu')">← Menú</button>
-      <span class="top-nav-title">🎱 El Presentador</span>
+      <span class="top-nav-title" id="pres-nav-title" onclick="toggleModeCorreccio()" style="cursor:default;user-select:none;">🎱 El Presentador</span>
       <button class="btn-sm" onclick="reiniciarBombo()">↺ Reinicia</button>
     </div>
 
@@ -229,6 +312,17 @@
     </div>
   </div>
 
+  <!-- QR SCANNER OVERLAY -->
+  <div class="qr-overlay" id="qr-overlay" style="display:none;">
+    <div class="qr-title">Escaneja el teu codi QR</div>
+    <div class="qr-frame">
+      <video id="qr-video" autoplay playsinline muted></video>
+      <div class="qr-corners"></div>
+    </div>
+    <div class="qr-subtitle">Apunta la càmera al codi QR de la teva entrada</div>
+    <button class="btn-gold" onclick="tancarQR()">Cancel·lar</button>
+  </div>
+
   <!-- SETUP PARTICIPANT -->
   <div class="screen" id="screen-setup-jugador">
     <div class="top-nav">
@@ -237,27 +331,51 @@
       <div></div>
     </div>
     <div class="setup-panel">
-      <div class="setup-title">Quants cartrons vols jugar?</div>
-      <div class="setup-subtitle">Cada cartró és una oportunitat de guanyar!<br>Tria entre 1 i 4 cartrons.</div>
-      <div class="cartons-selector">
-        <div class="carton-opt selected" id="opt-1" onclick="seleccionarCartrons(1)">
-          <span class="num">1</span>
-          <span class="lbl">cartró</span>
-        </div>
-        <div class="carton-opt" id="opt-2" onclick="seleccionarCartrons(2)">
-          <span class="num">2</span>
-          <span class="lbl">cartrons</span>
-        </div>
-        <div class="carton-opt" id="opt-3" onclick="seleccionarCartrons(3)">
-          <span class="num">3</span>
-          <span class="lbl">cartrons</span>
-        </div>
-        <div class="carton-opt" id="opt-4" onclick="seleccionarCartrons(4)">
-          <span class="num">4</span>
-          <span class="lbl">cartrons</span>
-        </div>
+      <div class="setup-title">Com vols els teus cartrons?</div>
+
+      <!-- Tabs aleatori / per codi -->
+      <div class="mode-tabs" style="margin-top:0.75rem;">
+        <button class="mode-tab active" id="tab-aleatori" onclick="canviarMode('aleatori')">🎲 Aleatoris</button>
+        <button class="mode-tab" id="tab-codi" onclick="canviarMode('codi')">🎫 Per codi</button>
       </div>
-      <button class="btn-gold" onclick="iniciarPartida()" style="width:100%;">🎄 Iniciar partida!</button>
+
+      <!-- Secció: cartrons aleatoris -->
+      <div class="mode-section active" id="sec-aleatori">
+        <div class="setup-subtitle" style="margin-bottom:1rem;">Cada cartró és una oportunitat de guanyar!<br>Tria entre 1 i 4 cartrons.</div>
+        <div class="cartons-selector">
+          <div class="carton-opt selected" id="opt-1" onclick="seleccionarCartrons(1)">
+            <span class="num">1</span><span class="lbl">cartró</span>
+          </div>
+          <div class="carton-opt" id="opt-2" onclick="seleccionarCartrons(2)">
+            <span class="num">2</span><span class="lbl">cartrons</span>
+          </div>
+          <div class="carton-opt" id="opt-3" onclick="seleccionarCartrons(3)">
+            <span class="num">3</span><span class="lbl">cartrons</span>
+          </div>
+          <div class="carton-opt" id="opt-4" onclick="seleccionarCartrons(4)">
+            <span class="num">4</span><span class="lbl">cartrons</span>
+          </div>
+        </div>
+        <button class="btn-gold" onclick="iniciarPartida()" style="width:100%;">🎄 Iniciar partida!</button>
+      </div>
+
+      <!-- Secció: cartrons per codi -->
+      <div class="mode-section" id="sec-codi">
+        <div class="setup-subtitle" style="margin-bottom:1rem;">Introdueix el codi de la teva entrada per obtenir el teu cartró únic i recuperable.</div>
+        <div class="codi-wrap">
+          <label class="codi-label" for="input-codi">El teu codi d'entrada</label>
+          <div class="codi-row">
+            <input class="codi-input" id="input-codi" type="text" maxlength="20"
+              placeholder="Ex: NADAL-042" autocomplete="off" spellcheck="false"
+              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9\-]/g,'')">
+            <button class="btn-qr" id="btn-qr" onclick="obrirQR()" title="Escanejar QR" style="display:none;">📷</button>
+          </div>
+          <div class="codi-hint" id="codi-hint">El codi sempre genera el mateix cartró.</div>
+          <div class="codi-error" id="codi-error">Cal introduir un codi vàlid.</div>
+        </div>
+        <button class="btn-gold" onclick="iniciarPartidaPerCodi()" style="width:100%;">🎄 Obtenir cartró!</button>
+      </div>
+
     </div>
   </div>
 
@@ -276,12 +394,43 @@
     <div class="cartrons-grid" id="cartrons-grid"></div>
   </div>
 
+  <!-- FOOTER LiTools -->
+  <div class="litools-footer">
+    <a href="https://github.com/litools-lab" target="_blank" rel="noopener">
+      <img src="https://litools-lab.github.io/assets/redlogo_trans.png" alt="LiTools logo"><span class="li">Li</span><span class="tools">Tools</span>
+    </a>
+    <div class="footer-links">
+      <a href="https://github.com/litools-lab/quina-nadal" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/litools-lab/quina-nadal/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+    </div>
+  </div>
+
 </div>
 
 <script>
   // ==================== UTILS ====================
   function rnd(arr){return arr[Math.floor(Math.random()*arr.length)];}
   function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+  // ==================== PRNG DETERMINISTA (seed) ====================
+  function hashCode(str){
+    let h=0x811c9dc5;
+    for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193);}
+    return h>>>0;
+  }
+  function mulberry32(seed){
+    return function(){
+      seed|=0;seed=seed+0x6D2B79F5|0;
+      let t=Math.imul(seed^seed>>>15,1|seed);
+      t=t+Math.imul(t^t>>>7,61|t)^t;
+      return((t^t>>>14)>>>0)/4294967296;
+    };
+  }
+  function shuffleSeeded(arr,rand){
+    const b=[...arr];
+    for(let i=b.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[b[i],b[j]]=[b[j],b[i]];}
+    return b;
+  }
 
   // ==================== MODAL (BUG #6 FIX) ====================
   // Substitueix confirm() natiu, que molts navegadors mòbils bloquegen
@@ -354,6 +503,25 @@
   }
 
   // ==================== PRESENTADOR ====================
+  let modeCorreccio = false, clicsCorreccio = 0, timerCorreccio = null;
+
+  function toggleModeCorreccio(){
+    clicsCorreccio++;
+    if(timerCorreccio) clearTimeout(timerCorreccio);
+    timerCorreccio = setTimeout(()=>{ clicsCorreccio=0; }, 600);
+    if(clicsCorreccio >= 3){
+      clicsCorreccio = 0;
+      modeCorreccio = !modeCorreccio;
+      const titol = document.getElementById('pres-nav-title');
+      if(modeCorreccio){
+        titol.innerHTML = '🎱 El Presentador <span style="font-size:0.6rem;background:rgba(185,28,28,0.7);color:#FCD34D;padding:2px 7px;border-radius:10px;vertical-align:middle;letter-spacing:1px;">CORRECCIÓ</span>';
+        mostrarAlerta('⚠️ Mode correcció activat. Pots marcar i desmarcar manualment.','error');
+      } else {
+        titol.innerHTML = '🎱 El Presentador';
+        mostrarAlerta('Mode correcció desactivat.','linia');
+      }
+    }
+  }
   let presDisp=[], presSortits=[], presUltim=null;
 
   // Frases opcionals: si frases.js no s'ha carregat, el joc continua sense frase
@@ -366,12 +534,17 @@
     presDisp=Array.from({length:90},(_,i)=>i+1);
     presSortits=[];
     presUltim=null; // BUG #9 FIX: reset explícit de presUltim
+    // Reset mode correcció
+    modeCorreccio=false; clicsCorreccio=0;
+    if(timerCorreccio){clearTimeout(timerCorreccio);timerCorreccio=null;}
+    const titol=document.getElementById('pres-nav-title');
+    if(titol) titol.innerHTML='🎱 El Presentador';
     const grid=document.getElementById('pres-grid');
     grid.innerHTML='';
     for(let i=1;i<=90;i++){
       const c=document.createElement('div');
       c.className='cel-grid';c.id='pcg-'+i;c.textContent=i;
-      //c.onclick=()=>togglePresManual(i);
+      c.onclick=()=>{ if(modeCorreccio) togglePresManual(i); };
       grid.appendChild(c);
     }
     document.getElementById('pres-num').style.display='none';
@@ -409,7 +582,7 @@
     if(!presDisp.length){document.getElementById('btn-treure').disabled=true;llançarConfetti();}
     document.getElementById('pres-comptador').textContent=`${presSortits.length} de 90 números trets`;
     actualitzarHistPresentador();
-    c.scrollIntoView({behavior:'smooth',block:'nearest'});
+
   }
 
   // BUG #3 FIX: funció reutilitzable per actualitzar l'historial
@@ -450,6 +623,73 @@
     }
   }
 
+  // ==================== SETUP MODE ====================
+  let modeActual = 'aleatori'; // 'aleatori' | 'codi'
+
+  function canviarMode(mode){
+    modeActual = mode;
+    document.getElementById('tab-aleatori').classList.toggle('active', mode==='aleatori');
+    document.getElementById('tab-codi').classList.toggle('active', mode==='codi');
+    document.getElementById('sec-aleatori').classList.toggle('active', mode==='aleatori');
+    document.getElementById('sec-codi').classList.toggle('active', mode==='codi');
+    document.getElementById('codi-error').style.display = 'none';
+  }
+
+  // ==================== QR SCANNER ====================
+  let qrStream = null, qrAnimFrame = null;
+
+  function detectarSuportCamera(){
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+      document.getElementById('btn-qr').style.display = 'flex';
+    }
+  }
+
+  async function obrirQR(){
+    const overlay = document.getElementById('qr-overlay');
+    const video = document.getElementById('qr-video');
+    overlay.style.display = 'flex';
+    try {
+      qrStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+      video.srcObject = qrStream;
+      video.play();
+      // Intentar llegir QR amb BarcodeDetector si disponible
+      if('BarcodeDetector' in window){
+        const detector = new BarcodeDetector({formats:['qr_code']});
+        const llegirFrame = async () => {
+          if(!qrStream) return;
+          try {
+            const codes = await detector.detect(video);
+            if(codes.length > 0){
+              const val = codes[0].rawValue.trim().toUpperCase().replace(/[^A-Z0-9\-]/g,'');
+              if(val){
+                document.getElementById('input-codi').value = val;
+                tancarQR();
+                return;
+              }
+            }
+          } catch(e){}
+          qrAnimFrame = requestAnimationFrame(llegirFrame);
+        };
+        video.addEventListener('playing', () => { qrAnimFrame = requestAnimationFrame(llegirFrame); }, {once:true});
+      } else {
+        // BarcodeDetector no disponible: mostrar missatge
+        document.getElementById('qr-overlay').querySelector('.qr-subtitle').textContent =
+          'Escaneig automàtic no disponible en aquest navegador. Fes una captura i introdueix el codi manualment.';
+      }
+    } catch(err){
+      tancarQR();
+      mostrarAlerta('No s\'ha pogut accedir a la càmera.','error');
+    }
+  }
+
+  function tancarQR(){
+    if(qrAnimFrame) cancelAnimationFrame(qrAnimFrame);
+    qrAnimFrame = null;
+    if(qrStream){ qrStream.getTracks().forEach(t=>t.stop()); qrStream = null; }
+    document.getElementById('qr-overlay').style.display = 'none';
+    document.getElementById('qr-video').srcObject = null;
+  }
+
   // ==================== PARTICIPANT ====================
   // BUG #11 FIX: numCartrons comença a 1 i es reseteja en tornar al setup
   let numCartrons=1, cartrons=[], alertaTimer=null;
@@ -458,6 +698,9 @@
   function entrarSetup(){
     numCartrons=1;
     seleccionarCartrons(1);
+    canviarMode('aleatori');
+    document.getElementById('input-codi').value = '';
+    document.getElementById('codi-error').style.display = 'none';
     goTo('screen-setup-jugador');
   }
 
@@ -474,13 +717,14 @@
    * Genera un cartró vàlid de quina:
    * - 3 files x 9 columnes (decades: col0=1-9, col1=10-19, ..., col8=80-90)
    * - Exactament 5 numeros per fila (garantit)
-   * - Cada columna pot tenir 0, 1, 2 o 3 numeros (mai mes de 3)
+   * - Cada columna pot tenir 0, 1 o 2 numeros (mai mes de 2)
    * - Els numeros de cada columna s'ordenen de menor a major (de dalt a baix)
    *
    * Algorisme: per a cada fila triem exactament 5 columnes,
    * assegurant que cap columna superi 3 aparicions en total entre les 3 files.
    */
-  function generarCarton(){
+  function generarCarton(rand){
+    rand = rand || Math.random.bind(Math);
     const RANGS = [
       [1,9],[10,19],[20,29],[30,39],[40,49],
       [50,59],[60,69],[70,79],[80,90]
@@ -500,12 +744,12 @@
         const filesRestants = 3 - fila;
         const elegibles = [];
         for(let col = 0; col < 9; col++){
-          if(comptCol[col] < 3) elegibles.push(col);
+          if(comptCol[col] < 2) elegibles.push(col);
         }
-        const quotaTotal = elegibles.reduce((s, col) => s + (3 - comptCol[col]), 0);
+        const quotaTotal = elegibles.reduce((s, col) => s + (2 - comptCol[col]), 0);
         if(elegibles.length < 5 || quotaTotal < filesRestants * 5){ valid = false; break; }
 
-        const colsTriades = shuffle(elegibles).slice(0, 5);
+        const colsTriades = shuffleSeeded(elegibles, rand).slice(0, 5);
         colsTriades.forEach(col => comptCol[col]++);
         filesAssig.push(colsTriades);
       }
@@ -536,7 +780,7 @@
       const filesCol = filesPerCol[col].sort((a,b) => a - b);
       if(filesCol.length === 0) continue;
       const [min, max] = RANGS[col];
-      const numsTriats = shuffle(Array.from({length: max - min + 1}, (_, i) => min + i))
+      const numsTriats = shuffleSeeded(Array.from({length: max - min + 1}, (_, i) => min + i), rand)
         .slice(0, filesCol.length)
         .sort((a, b) => a - b); // menor a major = de dalt a baix
       filesCol.forEach((fila, i) => { graella[fila][col] = numsTriats[i]; });
@@ -566,6 +810,24 @@
     goTo('screen-joc-jugador');
   }
 
+  function iniciarPartidaPerCodi(){
+    const codiRaw = document.getElementById('input-codi').value.trim().toUpperCase();
+    const errEl = document.getElementById('codi-error');
+    if(!codiRaw || codiRaw.length < 2){
+      errEl.style.display = 'block';
+      errEl.textContent = 'Cal introduir un codi vàlid (mínim 2 caràcters).';
+      return;
+    }
+    errEl.style.display = 'none';
+    const seed = hashCode(codiRaw);
+    const rand = mulberry32(seed);
+    cartrons = [];
+    // Mode per codi: sempre 1 cartró per codi
+    cartrons.push({idx:1, total:1, grid:generarCarton(rand), marcats:new Set(), linia:false, quina:false, codi:codiRaw});
+    renderJocJugador();
+    goTo('screen-joc-jugador');
+  }
+
   function renderJocJugador(){
     document.getElementById('sortits-title').textContent='Números marcats (0)';
     document.getElementById('sortits-pills').innerHTML='<span style="color:rgba(252,211,77,0.4);font-size:0.75rem;">Clica els teus números quan el presentador els canti</span>';
@@ -582,8 +844,9 @@
       // BUG #7 FIX: la classe guanyador ja bloqueja les celes via CSS
       div.className='carton'+(c.quina?' guanyador':'');
       div.id='carton-'+ci;
-      const titol=c.total>1?'Cartró '+c.idx+' de '+c.total:'El meu cartró';
-      div.innerHTML=`<div class="carton-header"><div><div class="carton-nom">${titol}</div></div><div id="badges-${ci}">${badgesHTML(c)}</div></div><div class="carton-grid" id="cg-${ci}"></div>`;
+      const codiTag = c.codi ? ` <span class='badge-codi'>${c.codi}</span>` : '';
+      const titol=(c.total>1?'Cartró '+c.idx+' de '+c.total:'El meu cartró');
+      div.innerHTML=`<div class="carton-header"><div><div class="carton-nom">${titol}${codiTag}</div></div><div id="badges-${ci}">${badgesHTML(c)}</div></div><div class="carton-grid" id="cg-${ci}"></div>`;
       cg.appendChild(div);
       renderGrid(ci);
     }
@@ -688,6 +951,9 @@
   // BUG #11 FIX: el botó Participant ara crida entrarSetup() per resetejar la selecció
   document.querySelector('.menu-btn[onclick*="screen-setup-jugador"]')
     .setAttribute('onclick', 'entrarSetup()');
+
+  // Detectar suport càmera per mostrar botó QR
+  detectarSuportCamera();
 
   // DECORACIÓ
   const bg=document.getElementById('bgdeco');
