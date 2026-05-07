@@ -7,7 +7,7 @@ i el projecte segueix [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
-## [1.0.0] - 2024-12-XX
+## [1.0.0] - 2026-05-07
 
 ### ✨ Afegit
 
