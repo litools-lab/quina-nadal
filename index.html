@@ -208,6 +208,11 @@
     .qr-title{font-family:'Playfair Display',serif;color:#FCD34D;font-size:1rem;text-align:center;}
     .qr-subtitle{font-size:0.75rem;color:rgba(252,211,77,0.6);text-align:center;}
 
+    /* ── Pill codi afegit a la llista ── */
+    .codi-pill{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(0,0,0,0.35);border:1px solid rgba(252,211,77,0.4);border-radius:20px;padding:3px 10px 3px 10px;color:#FCD34D;font-size:0.7rem;font-weight:700;letter-spacing:1px;}
+    .codi-pill button{background:none;border:none;color:rgba(252,211,77,0.5);cursor:pointer;font-size:0.75rem;padding:0;line-height:1;transition:color 0.15s;}
+    .codi-pill button:hover{color:#FCD34D;}
+
     /* ── Badge codi al cartró ── */
     .badge-codi{background:rgba(0,0,0,0.12);color:#7F1D1D;font-size:0.58rem;padding:2px 6px;border-radius:10px;font-family:'Lato',sans-serif;letter-spacing:1px;font-weight:700;text-transform:uppercase;}
 
@@ -241,14 +246,52 @@
 
   <!-- Modal Nova Partida: mateixos cartrons o nous -->
   <div class="modal-overlay" id="modal-nova-partida" style="display:none;" onclick="modalNovaCancel()">
-    <div class="modal-box" onclick="event.stopPropagation()">
-      <p style="margin-bottom:0.5rem;">Nova partida</p>
-      <p style="font-family:'Lato',sans-serif;font-size:0.8rem;color:rgba(252,211,77,0.65);margin-bottom:1.2rem;font-weight:400;">Vols jugar amb els mateixos cartrons o generar-ne de nous?</p>
-      <div style="display:flex;flex-direction:column;gap:0.6rem;">
-        <button class="btn-confirm" style="width:100%;" onclick="novaPartidaMateixos()">&#9851; Mateixos cartrons</button>
-        <button class="btn-confirm" style="width:100%;background:linear-gradient(135deg,#14532D,#166534);" onclick="novaPartidaNous()">&#127956; Cartrons nous</button>
-        <button class="btn-cancel" style="width:100%;text-align:center;" onclick="modalNovaCancel()">Cancel·lar</button>
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width:380px;">
+      <p style="margin-bottom:0.3rem;">Nova partida</p>
+      <p style="font-family:'Lato',sans-serif;font-size:0.82rem;color:rgba(252,211,77,0.55);margin-bottom:1.5rem;font-weight:400;line-height:1.5;">Com vols continuar?</p>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.25rem;">
+
+        <button onclick="novaPartidaMateixos()" style="
+          display:flex;align-items:center;gap:1rem;
+          background:rgba(185,28,28,0.2);
+          border:2px solid rgba(252,211,77,0.55);
+          border-radius:12px;padding:1rem 1.1rem;
+          cursor:pointer;text-align:left;width:100%;transition:all 0.2s;"
+          onmouseover="this.style.background='rgba(185,28,28,0.35)'"
+          onmouseout="this.style.background='rgba(185,28,28,0.2)'">
+          <span style="font-size:1.8rem;line-height:1;">&#9851;</span>
+          <span>
+            <span style="display:block;font-family:'Playfair Display',serif;color:#FCD34D;font-size:1rem;font-weight:700;">Mateixos cartrons</span>
+            <span style="display:block;font-size:0.72rem;color:rgba(252,211,77,0.6);margin-top:3px;line-height:1.4;">Reinicia els marcats però conserva les mateixes graelles</span>
+          </span>
+        </button>
+
+        <button onclick="novaPartidaNous()" style="
+          display:flex;align-items:center;gap:1rem;
+          background:rgba(20,83,45,0.35);
+          border:2px solid rgba(34,197,94,0.45);
+          border-radius:12px;padding:1rem 1.1rem;
+          cursor:pointer;text-align:left;width:100%;transition:all 0.2s;"
+          onmouseover="this.style.background='rgba(20,83,45,0.55)'"
+          onmouseout="this.style.background='rgba(20,83,45,0.35)'">
+          <span style="font-size:1.8rem;line-height:1;">&#127956;</span>
+          <span>
+            <span style="display:block;font-family:'Playfair Display',serif;color:#22c55e;font-size:1rem;font-weight:700;">Cartrons nous</span>
+            <span style="display:block;font-size:0.72rem;color:rgba(34,197,94,0.75);margin-top:3px;line-height:1.4;">Genera noves graelles aleatòries mantenint el nombre de cartrons</span>
+          </span>
+        </button>
+
       </div>
+      <button onclick="modalNovaCancel()" style="
+        width:100%;background:transparent;
+        border:1px solid rgba(252,211,77,0.25);
+        border-radius:8px;color:rgba(252,211,77,0.5);
+        font-size:0.82rem;padding:0.6rem;cursor:pointer;
+        font-family:'Lato',sans-serif;transition:all 0.2s;"
+        onmouseover="this.style.borderColor='rgba(252,211,77,0.5)';this.style.color='rgba(252,211,77,0.8)'"
+        onmouseout="this.style.borderColor='rgba(252,211,77,0.25)';this.style.color='rgba(252,211,77,0.5)'">
+        Cancel·lar
+      </button>
     </div>
   </div>
 
@@ -361,19 +404,26 @@
 
       <!-- Secció: cartrons per codi -->
       <div class="mode-section" id="sec-codi">
-        <div class="setup-subtitle" style="margin-bottom:1rem;">Introdueix el codi de la teva entrada per obtenir el teu cartró únic i recuperable.</div>
+        <div class="setup-subtitle" style="margin-bottom:1rem;">Introdueix el codi de cada entrada. Cada codi genera un cartró únic i recuperable.</div>
         <div class="codi-wrap">
-          <label class="codi-label" for="input-codi">El teu codi d'entrada</label>
+          <label class="codi-label" for="input-codi">Codi d'entrada</label>
           <div class="codi-row">
             <input class="codi-input" id="input-codi" type="text" maxlength="20"
               placeholder="Ex: NADAL-042" autocomplete="off" spellcheck="false"
-              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9\-]/g,'')">
+              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9\-]/g,'')" onkeydown="if(event.key==='Enter')afegirCodiALlista()">
             <button class="btn-qr" id="btn-qr" onclick="obrirQR()" title="Escanejar QR" style="display:none;">📷</button>
           </div>
-          <div class="codi-hint" id="codi-hint">El codi sempre genera el mateix cartró.</div>
-          <div class="codi-error" id="codi-error">Cal introduir un codi vàlid.</div>
+          <div class="codi-error" id="codi-error" style="display:none;">Cal introduir un codi vàlid.</div>
         </div>
-        <button class="btn-gold" onclick="iniciarPartidaPerCodi()" style="width:100%;">🎄 Obtenir cartró!</button>
+        <!-- Llista de codis afegits -->
+        <div id="codis-afegits" style="display:none;margin-bottom:0.75rem;">
+          <div style="font-size:0.65rem;color:rgba(252,211,77,0.55);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.4rem;">Cartrons afegits</div>
+          <div id="codis-llista" style="display:flex;flex-wrap:wrap;gap:0.4rem;"></div>
+        </div>
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.6rem;">
+          <button class="btn-gold" onclick="afegirCodiALlista()" style="flex:1;background:rgba(0,0,0,0.35);border-color:rgba(252,211,77,0.5);font-size:0.8rem;">+ Afegir cartró</button>
+        </div>
+        <button class="btn-gold" onclick="iniciarPartidaPerCodi()" id="btn-iniciar-codi" style="width:100%;opacity:0.45;" disabled>🎄 Iniciar partida!</button>
       </div>
 
     </div>
@@ -487,7 +537,13 @@
   function novaPartidaNous(){
     document.getElementById('modal-nova-partida').style.display = 'none';
     // Generem cartrons nous amb el mateix nombre que la partida anterior
+    const erenPerCodi = cartrons.length > 0 && cartrons[0].codi;
     cartrons = [];
+    if(erenPerCodi){
+      // No podem regenerar per codi sense els codis: anem al setup
+      goTo('screen-setup-jugador');
+      return;
+    }
     for(let c = 0; c < numCartrons; c++){
       cartrons.push({idx:c+1, total:numCartrons, grid:generarCarton(), marcats:new Set(), linia:false, quina:false});
     }
@@ -700,6 +756,8 @@
     seleccionarCartrons(1);
     canviarMode('aleatori');
     document.getElementById('input-codi').value = '';
+    codisPendents = [];
+    renderCodisPendents();
     document.getElementById('codi-error').style.display = 'none';
     goTo('screen-setup-jugador');
   }
@@ -810,23 +868,81 @@
     goTo('screen-joc-jugador');
   }
 
-  function iniciarPartidaPerCodi(){
-    const codiRaw = document.getElementById('input-codi').value.trim().toUpperCase();
+  // Llista de codis afegits per a la partida
+  let codisPendents = []; // [{codi:'NADAL-042'}, ...]
+
+  function afegirCodiALlista(){
+    const input = document.getElementById('input-codi');
     const errEl = document.getElementById('codi-error');
-    if(!codiRaw || codiRaw.length < 2){
+    const codi = input.value.trim().toUpperCase();
+
+    if(!codi || codi.length < 2){
       errEl.style.display = 'block';
       errEl.textContent = 'Cal introduir un codi vàlid (mínim 2 caràcters).';
       return;
     }
+    if(codisPendents.some(e => e.codi === codi)){
+      errEl.style.display = 'block';
+      errEl.textContent = 'Aquest codi ja ha estat afegit.';
+      return;
+    }
     errEl.style.display = 'none';
-    const seed = hashCode(codiRaw);
-    const rand = mulberry32(seed);
-    cartrons = [];
-    // Mode per codi: sempre 1 cartró per codi
-    cartrons.push({idx:1, total:1, grid:generarCarton(rand), marcats:new Set(), linia:false, quina:false, codi:codiRaw});
+    codisPendents.push({codi});
+    input.value = '';
+    input.focus();
+    renderCodisPendents();
+  }
+
+  function eliminarCodiPendent(codi){
+    codisPendents = codisPendents.filter(e => e.codi !== codi);
+    renderCodisPendents();
+  }
+
+  function renderCodisPendents(){
+    const zona = document.getElementById('codis-afegits');
+    const llista = document.getElementById('codis-llista');
+    const btnIniciar = document.getElementById('btn-iniciar-codi');
+    if(codisPendents.length === 0){
+      zona.style.display = 'none';
+      btnIniciar.disabled = true;
+      btnIniciar.style.opacity = '0.45';
+    } else {
+      zona.style.display = 'block';
+      btnIniciar.disabled = false;
+      btnIniciar.style.opacity = '1';
+      llista.innerHTML = codisPendents.map(e =>
+        `<span class="codi-pill">${e.codi}<button onclick="eliminarCodiPendent('${e.codi}')" title="Eliminar">✕</button></span>`
+      ).join('');
+    }
+  }
+
+  function iniciarPartidaPerCodi(){
+    // Si hi ha un codi a l'input que no s'ha afegit, l'afegim primer
+    const input = document.getElementById('input-codi');
+    const codiInput = input.value.trim().toUpperCase();
+    if(codiInput.length >= 2 && !codisPendents.some(e => e.codi === codiInput)){
+      codisPendents.push({codi: codiInput});
+      input.value = '';
+    }
+
+    if(codisPendents.length === 0){
+      const errEl = document.getElementById('codi-error');
+      errEl.style.display = 'block';
+      errEl.textContent = 'Afegeix almenys un codi vàlid.';
+      return;
+    }
+
+    cartrons = codisPendents.map((e, i) => {
+      const seed = hashCode(e.codi);
+      const rand = mulberry32(seed);
+      return {idx:i+1, total:codisPendents.length, grid:generarCarton(rand), marcats:new Set(), linia:false, quina:false, codi:e.codi};
+    });
+    codisPendents = [];
+    renderCodisPendents();
     renderJocJugador();
     goTo('screen-joc-jugador');
   }
+
 
   function renderJocJugador(){
     document.getElementById('sortits-title').textContent='Números marcats (0)';
